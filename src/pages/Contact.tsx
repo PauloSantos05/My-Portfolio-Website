@@ -1,12 +1,22 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { Mail, Phone, MapPin, Send, CheckCircle, Github, Linkedin, MessageCircle } from 'lucide-react';
-import { useMessages } from '../hooks/useFirebase';
+import { useMessages, useContent } from '../hooks/useFirebase';
 import { useTranslation } from 'react-i18next';
 
 export default function Contact() {
   const { sendMessage } = useMessages();
-  const { t } = useTranslation();
+  const { content } = useContent();
+  const { t, i18n } = useTranslation();
+
+  const getTranslatableContent = (key: string, defaultValue: string) => {
+    const langSuffix = i18n.language.startsWith('pt') ? '' : i18n.language.includes('en') ? '_en' : i18n.language.includes('es') ? '_es' : '';
+    return content[`${key}${langSuffix}`]?.value || content[key]?.value || defaultValue;
+  };
+
+  const githubLink = getTranslatableContent('github_link', 'https://github.com');
+  const linkedinLink = getTranslatableContent('linkedin_link', 'https://linkedin.com');
+
   const [status, setStatus] = useState<'idle' | 'sending' | 'success' | 'error'>('idle');
   const [formData, setFormData] = useState({
     name: '',
@@ -76,11 +86,11 @@ export default function Contact() {
           </div>
 
           <div className="pt-8 border-t border-surface-variant flex space-x-6">
-            <a href="https://github.com" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors flex items-center space-x-2 font-bold uppercase tracking-widest text-xs">
+            <a href={githubLink} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors flex items-center space-x-2 font-bold uppercase tracking-widest text-xs">
               <Github size={18} />
               <span>Github</span>
             </a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors flex items-center space-x-2 font-bold uppercase tracking-widest text-xs">
+            <a href={linkedinLink} target="_blank" rel="noreferrer" className="text-on-surface-variant hover:text-primary transition-colors flex items-center space-x-2 font-bold uppercase tracking-widest text-xs">
               <Linkedin size={18} />
               <span>LinkedIn</span>
             </a>

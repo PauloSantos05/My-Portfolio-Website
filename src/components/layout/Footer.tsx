@@ -15,6 +15,9 @@ export default function Footer() {
 
   const logoText = getTranslatableContent('site_logo', 'Paulo dos Santos Ribeiro');
 
+  const githubLink = getTranslatableContent('github_link', 'https://github.com');
+  const linkedinLink = getTranslatableContent('linkedin_link', 'https://linkedin.com');
+
   return (
     <footer className="bg-primary text-on-primary py-16 px-6">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center space-y-8 md:space-y-0 text-center md:text-left">
@@ -37,10 +40,10 @@ export default function Footer() {
         </div>
 
         <div className="flex items-center space-x-6">
-          <a href="https://github.com" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
+          <a href={githubLink} target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
             <Github size={24} />
           </a>
-          <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
+          <a href={linkedinLink} target="_blank" rel="noopener noreferrer" className="hover:text-secondary transition-colors">
             <Linkedin size={24} />
           </a>
         </div>

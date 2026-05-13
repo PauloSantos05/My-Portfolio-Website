@@ -21,6 +21,8 @@ export default function ContentManager() {
     { id: 'about_title', label: 'Sobre: Título de Introdução', type: 'text' as const },
     { id: 'about_bio', label: 'Sobre: Biografia Completa', type: 'text' as const },
     { id: 'about_image', label: 'Sobre: Foto de Perfil (URL)', type: 'image' as const },
+    { id: 'github_link', label: 'Link: GitHub', type: 'text' as const },
+    { id: 'linkedin_link', label: 'Link: LinkedIn', type: 'text' as const },
   ];
 
   const [activeTab, setActiveTab] = useState<'text' | 'colors'>('text');
@@ -32,7 +34,7 @@ export default function ContentManager() {
     { id: 'theme_surface', label: 'Fundo (Luz)', key: 'surface' },
     { id: 'theme_on-surface', label: 'Texto (Luz)', key: 'on-surface' },
     { id: 'theme_admin-sidebar', label: 'Barra Lateral (Luz)', key: 'admin-sidebar' },
-    { id: 'theme-surface-variant', label: 'Bordas (Luz)', key: 'surface-variant' }
+    { id: 'theme_surface-variant', label: 'Bordas (Luz)', key: 'surface-variant' }
   ];
 
   const darkThemeConfig = [
@@ -42,7 +44,7 @@ export default function ContentManager() {
     { id: 'theme_dark-surface', label: 'Fundo (Escuro)', key: 'dark-surface' },
     { id: 'theme_dark-on-surface', label: 'Texto (Escuro)', key: 'dark-on-surface' },
     { id: 'theme_dark-admin-sidebar', label: 'Barra Lateral (Escuro)', key: 'dark-admin-sidebar' },
-    { id: 'theme-dark-surface-variant', label: 'Bordas (Escuro)', key: 'dark-surface-variant' }
+    { id: 'theme_dark-surface-variant', label: 'Bordas (Escuro)', key: 'dark-surface-variant' }
   ];
 
   const handleColorChange = async (id: string, key: string, value: string) => {

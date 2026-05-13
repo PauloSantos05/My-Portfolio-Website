@@ -33,8 +33,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   // Load colors from content (Firebase)
   useEffect(() => {
     const themeColors: Record<string, string> = {};
-    const lightKeys = ['primary', 'on-primary', 'secondary', 'surface', 'on-surface'];
-    const darkKeys = ['dark-primary', 'dark-on-primary', 'dark-secondary', 'dark-surface', 'dark-on-surface'];
+    const lightKeys = ['primary', 'on-primary', 'secondary', 'surface', 'on-surface', 'admin-sidebar', 'surface-variant'];
+    const darkKeys = ['dark-primary', 'dark-on-primary', 'dark-secondary', 'dark-surface', 'dark-on-surface', 'dark-admin-sidebar', 'dark-surface-variant'];
     
     lightKeys.forEach(key => {
       const val = content[`theme_${key}`]?.value;
