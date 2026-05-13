@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 import { storage } from '../lib/firebase';
 import { Upload, X, Loader2, Image as ImageIcon } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
@@ -13,12 +13,18 @@ interface ImageUploaderProps {
 export default function ImageUploader({ onUpload, currentUrl, label }: ImageUploaderProps) {
   const { t } = useTranslation();
   const [uploading, setUploading] = useState(false);
+  const [progress, setProgress] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (!file) return;
+    if (!file) {
+      console.log('No file selected');
+      return;
+    }
+
+    console.log('Starting upload for:', file.name, 'size:', file.size, 'type:', file.type);
 
     // Basic validation
     if (!file.type.startsWith('image/')) {
@@ -26,24 +32,84 @@ export default function ImageUploader({ onUpload, currentUrl, label }: ImageUplo
       return;
     }
 
-    if (file.size > 2 * 1024 * 1024) {
-      setError(t('admin.uploader.error.size', { defaultValue: 'A imagem deve ter menos de 2MB.' }));
+    if (file.size > 5 * 1024 * 1024) { // Increase to 5MB
+      setError(t('admin.uploader.error.size', { defaultValue: 'A imagem deve ter menos de 5MB.' }));
       return;
     }
 
     setUploading(true);
+    setProgress(0);
     setError(null);
 
     try {
-      const storageRef = ref(storage, `uploads/${Date.now()}-${file.name}`);
-      await uploadBytes(storageRef, file);
-      const url = await getDownloadURL(storageRef);
-      onUpload(url);
-    } catch (err) {
-      console.error('Upload error:', err);
-      setError(t('admin.uploader.error.generic', { defaultValue: 'Erro ao fazer upload. Tente novamente.' }));
-    } finally {
+      console.log('Preparing storage reference...');
+      const bucketName = storage.app.options.storageBucket;
+      if (!bucketName) {
+        throw new Error('Configuração storageBucket ausente no firebase-applet-config.json');
+      }
+
+      const fileName = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.-]/g, '_')}`;
+      const storageRef = ref(storage, `uploads/${fileName}`);
+      
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      // Add a safety timeout (30 seconds)
+      const timeoutId = setTimeout(() => {
+        uploadTask.cancel();
+        setError('O upload demorou muito tempo (Timeout). Verifique se o Storage está ATIVADO no Console do Firebase e se o CORS está configurado.');
+        setUploading(false);
+      }, 30000);
+
+      return new Promise<void>((resolve, reject) => {
+        uploadTask.on('state_changed', 
+          (snapshot) => {
+            const p = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+            console.log('Upload is ' + p + '% done');
+            setProgress(p);
+          }, 
+          (err: any) => {
+            clearTimeout(timeoutId);
+            console.error('Upload task error:', err);
+            let message = t('admin.uploader.error.generic', { defaultValue: 'Erro ao fazer upload. Tente novamente.' });
+            
+            if (err.code === 'storage/unauthorized') {
+              message = 'Erro de permissão no Firebase Storage. Certifique-se de que o Storage está ativado no Console do Firebase e as regras foram aplicadas.';
+            } else if (err.code === 'storage/canceled') {
+              message = 'Upload cancelado ou tempo expirado (Timeout).';
+            } else if (err.code === 'storage/retry-limit-exceeded') {
+              message = 'Falha recorrente (Retry Limit). Verifique se o Storage foi inicializado no Console.';
+            } else if (err.code === 'storage/invalid-default-bucket') {
+              message = 'O bucket padrão é inválido. Verifique o identificador no console do Firebase.';
+            }
+            
+            setError(message);
+            setUploading(false);
+            reject(err);
+          }, 
+          async () => {
+            clearTimeout(timeoutId);
+            try {
+              console.log('Upload successful, getting download URL...');
+              const url = await getDownloadURL(uploadTask.snapshot.ref);
+              console.log('Download URL obtained:', url);
+              onUpload(url);
+              setUploading(false);
+              resolve();
+            } catch (urlErr) {
+              console.error('URL error:', urlErr);
+              setError('Erro ao obter link da imagem.');
+              setUploading(false);
+              reject(urlErr);
+            }
+          }
+        );
+      });
+    } catch (err: any) {
+      console.error('Outer upload error:', err);
       setUploading(false);
+    } finally {
+      // Reset input
+      if (fileInputRef.current) fileInputRef.current.value = '';
     }
   };
 
@@ -86,7 +152,10 @@ export default function ImageUploader({ onUpload, currentUrl, label }: ImageUplo
             className="w-full aspect-video border-2 border-dashed border-surface-variant rounded-md flex flex-col items-center justify-center space-y-2 hover:border-secondary transition-colors group"
           >
             {uploading ? (
-              <Loader2 size={32} className="animate-spin text-secondary" />
+              <div className="flex flex-col items-center space-y-2">
+                <Loader2 size={32} className="animate-spin text-secondary" />
+                <span className="text-[10px] font-bold text-secondary">{Math.round(progress)}%</span>
+              </div>
             ) : (
               <>
                 <Upload size={32} className="text-surface-variant group-hover:text-secondary transition-colors" />

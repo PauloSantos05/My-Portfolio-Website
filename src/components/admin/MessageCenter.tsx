@@ -1,17 +1,33 @@
-import { useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useMessages } from '../../hooks/useFirebase';
-import { Mail, User, Clock, Trash2, RefreshCcw } from 'lucide-react';
+import { Mail, Clock, Trash2, RefreshCcw, X } from 'lucide-react';
 
 export default function MessageCenter() {
   const { messages, loading, fetchMessages, deleteMessage } = useMessages();
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [messageToDelete, setMessageToDelete] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchMessages();
   }, []);
 
-  const handleDelete = async (id: string) => {
-    if (confirm('Deseja excluir esta mensagem permanentemente?')) {
-      await deleteMessage(id);
+  const handleDelete = (id: string) => {
+    setMessageToDelete(id);
+    setIsDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (messageToDelete) {
+      try {
+        setError(null);
+        await deleteMessage(messageToDelete);
+        setIsDeleteConfirmOpen(false);
+        setMessageToDelete(null);
+      } catch (err: any) {
+        setError("Não foi possível excluir a mensagem.");
+        console.error(err);
+      }
     }
   };
 
@@ -29,6 +45,13 @@ export default function MessageCenter() {
           <RefreshCcw size={20} className={loading ? 'animate-spin' : ''} />
         </button>
       </div>
+
+      {error && (
+        <div className="bg-error/10 border border-error/20 text-error p-4 rounded-md text-sm flex justify-between items-center">
+          <span>{error}</span>
+          <button onClick={() => setError(null)} className="hover:opacity-70"><X size={16} /></button>
+        </div>
+      )}
 
       <div className="space-y-4">
         {loading && messages.length === 0 ? (
@@ -74,6 +97,38 @@ export default function MessageCenter() {
           ))
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {isDeleteConfirmOpen && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-6">
+          <div className="absolute inset-0 bg-primary/40 backdrop-blur-sm" onClick={() => setIsDeleteConfirmOpen(false)} />
+          <div className="bg-white max-w-sm w-full rounded-lg shadow-2xl relative z-10 p-8 text-center space-y-6">
+            <div className="w-16 h-16 bg-error/10 text-error rounded-full flex items-center justify-center mx-auto">
+              <Trash2 size={32} />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-xl font-serif font-bold text-primary">Excluir Mensagem</h3>
+              <p className="text-sm text-on-surface-variant font-medium opacity-70">
+                Tem certeza que deseja remover esta mensagem permanentemente?
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
+              <button 
+                onClick={() => setIsDeleteConfirmOpen(false)}
+                className="flex-1 bg-surface-container text-primary py-3 rounded-sm font-bold tracking-widest uppercase hover:bg-surface-container-high transition-all"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={confirmDelete}
+                className="flex-1 bg-[#ba1a1a] text-white py-3 rounded-sm font-bold tracking-widest uppercase hover:bg-[#a01515] transition-all shadow-md"
+              >
+                Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

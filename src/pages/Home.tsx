@@ -18,7 +18,10 @@ export default function Home() {
   };
 
   const heroTitle = getTranslatableContent('hero_title', t('home.hero.title', { defaultValue: "Crafting timeless digital experiences with purpose and precision." }));
+  const heroBadge = getTranslatableContent('hero_badge', t('home.hero.subtitle'));
   const heroSub = getTranslatableContent('hero_sub', t('home.hero.sub', { defaultValue: "I am a multidisciplinary creator rooted in the intersection of organic aesthetics and professional stability. My work prioritizes clarity, high-contrast typography, and meticulous attention to detail." }));
+  const heroExpYears = getTranslatableContent('hero_exp_years', '05+');
+  const heroExpText = getTranslatableContent('hero_exp_text', t('home.hero.experience'));
   const heroImage = content['hero_image']?.value || "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=800";
 
   const featuredProjects = projects.filter(p => p.featured).slice(0, 3);
@@ -33,7 +36,7 @@ export default function Home() {
             animate={{ opacity: 1, x: 0 }}
             className="text-[10px] font-bold uppercase tracking-[0.2em] text-secondary"
           >
-            {t('home.hero.subtitle')}
+            {heroBadge}
           </motion.p>
           <motion.h1 
             initial={{ opacity: 0 }}
@@ -86,8 +89,8 @@ export default function Home() {
             </div>
           )}
           <div className="absolute bottom-6 left-6 z-20 bg-white/90 backdrop-blur px-6 py-4 border border-surface-variant shadow-sm">
-            <p className="text-3xl font-serif font-bold text-primary">05+</p>
-            <p className="text-[10px] font-bold uppercase tracking-widest text-secondary">{t('home.hero.experience')}</p>
+            <p className="text-3xl font-serif font-bold text-primary">{heroExpYears}</p>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-secondary">{heroExpText}</p>
           </div>
         </motion.div>
       </section>

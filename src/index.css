@@ -17,6 +17,11 @@
   --color-surface: #f9faf2;
   --color-on-surface: #191c18;
   --color-surface-variant: #e2e3dc;
+  --color-surface-container: #eeeeee;
+  --color-surface-container-high: #e0e0e0;
+
+  --color-error: #ba1a1a;
+  --color-on-error: #ffffff;
   
   /* Custom Spacing */
   --spacing-section: 120px;

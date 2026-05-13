@@ -1,44 +1,85 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-    
-    // Helpers
-    function isSignedIn() {
-      return request.auth != null;
-    }
-
-    function isAdmin() {
-      return isSignedIn() && 
-             (request.auth.uid == 'hx0LZRgjRQf28RTU060qs7posmd2' || 
-              request.auth.token.email == 'pauloribeirosantos1606@gmail.com') &&
-             request.auth.token.email_verified == true;
-    }
-
-    function isValidId(id) {
-      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
-    }
-
-    // Projects: Public Read, Admin Write
-    match /projects/{projectId} {
-      allow read: if true;
-      allow create, update, delete: if isAdmin();
-    }
-
-    // Content: Public Read, Admin Write
-    match /content/{contentId} {
-      allow read: if true;
-      allow write: if isAdmin();
-    }
-
-    // Messages: Public Create, Admin Read/Delete
-    match /messages/{messageId} {
-      allow create: if true;
-      allow read, delete: if isAdmin();
-    }
-    
-    // Default Deny
+    // 0. Global Safety Net
     match /{document=**} {
       allow read, write: if false;
+    }
+
+    // Primitives
+    function isSignedIn() { return request.auth != null; }
+    function isAdmin() { 
+      return isSignedIn() && 
+             request.auth.token.email == 'pauloribeirosantos1606@gmail.com' && 
+             request.auth.token.email_verified == true;
+    }
+    function incoming() { return request.resource.data; }
+    function existing() { return resource.data; }
+    function isValidId(id) { return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$'); }
+
+    // Helpers
+    function isString(val, max) { return val is string && val.size() <= max; }
+
+    // 1. Projects
+    match /projects/{projectId} {
+      function isValidProject(data) {
+        return isString(data.title, 200) &&
+               isString(data.description, 5000) &&
+               isString(data.imageUrl, 2000) &&
+               (data.get('category', '') is string && data.get('category', '').size() <= 100) &&
+               (data.get('githubUrl', '') is string && data.get('githubUrl', '').size() <= 1000) &&
+               (data.get('liveUrl', '') is string && data.get('liveUrl', '').size() <= 1000) &&
+               (data.get('tags', []) is list && data.get('tags', []).size() <= 50) &&
+               (data.get('featured', false) is bool) &&
+               (data.get('order', 0) is number);
+      }
+
+      allow read, list: if true;
+      allow create: if isAdmin() && 
+                      isValidId(projectId) &&
+                      isValidProject(incoming()) && 
+                      incoming().createdAt == request.time;
+      allow update: if isAdmin() && 
+                      isValidProject(incoming()) && 
+                      incoming().createdAt == existing().createdAt &&
+                      incoming().diff(existing()).affectedKeys().hasOnly(['title', 'description', 'imageUrl', 'tags', 'githubUrl', 'liveUrl', 'category', 'featured', 'order', 'createdAt']);
+      allow delete: if isAdmin();
+    }
+
+    // 2. Global Content
+    match /content/{contentId} {
+      function isValidContent(data) {
+        return isString(data.value, 20000) &&
+               (data.get('type', 'text') in ['text', 'image']);
+      }
+
+      allow read, list: if true;
+      allow create: if isAdmin() && isValidContent(incoming());
+      allow update: if isAdmin() && 
+                      isValidContent(incoming()) &&
+                      incoming().updatedAt == request.time &&
+                      incoming().diff(existing()).affectedKeys().hasOnly(['value', 'type', 'updatedAt']);
+      allow delete: if isAdmin();
+    }
+
+    // 3. Contact Messages
+    match /messages/{messageId} {
+      function isValidMessage(data) {
+        return isString(data.name, 200) &&
+               isString(data.email, 255) && 
+               data.email.matches('.*@.*\\..*') &&
+               isString(data.message, 10000);
+      }
+
+      allow create: if isValidMessage(incoming()) && 
+                      incoming().createdAt == request.time;
+      allow list, get, delete: if isAdmin();
+      allow update: if false; 
+    }
+
+    // 4. Connection Test
+    match /_connection_test_/{docId} {
+      allow read, write: if isAdmin();
     }
   }
 }

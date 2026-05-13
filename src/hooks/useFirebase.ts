@@ -1,4 +1,4 @@
-import { collection, query, orderBy, onSnapshot, addDoc, updateDoc, deleteDoc, doc, Timestamp, getDocs } from 'firebase/firestore';
+import { collection, query, orderBy, onSnapshot, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, getDocs, setDoc } from 'firebase/firestore';
 import { useState, useEffect } from 'react';
 import { db, auth } from '../lib/firebase';
 
@@ -80,7 +80,7 @@ export function useProjects() {
     try {
       await addDoc(collection(db, 'projects'), {
         ...project,
-        createdAt: Timestamp.now(),
+        createdAt: serverTimestamp(),
         order: project.order ?? 0
       });
     } catch (error) {
@@ -137,11 +137,9 @@ export function useContent() {
 
   const updateContent = async (id: string, value: string, type: 'text' | 'image' = 'text') => {
     try {
-      await updateDoc(doc(db, 'content', id), { value, type, updatedAt: Timestamp.now() });
+      await setDoc(doc(db, 'content', id), { value, type, updatedAt: serverTimestamp() }, { merge: true });
     } catch (error) {
-      // If doc doesn't exist, try setting it? No, Firestore update fails if not exists.
-      // But we can use setDoc with merge.
-      handleFirestoreError(error, OperationType.UPDATE, `content/${id}`);
+      handleFirestoreError(error, OperationType.WRITE, `content/${id}`);
     }
   };
 
@@ -182,7 +180,7 @@ export function useMessages() {
         name,
         email,
         message,
-        createdAt: Timestamp.now()
+        createdAt: serverTimestamp()
       });
     } catch (error) {
       handleFirestoreError(error, OperationType.CREATE, 'messages');

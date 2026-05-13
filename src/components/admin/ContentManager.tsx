@@ -10,8 +10,11 @@ export default function ContentManager() {
 
   const baseKeys = [
     { id: 'hero_title', label: 'Home: Título Principal', type: 'text' as const },
-    { id: 'hero_sub', label: 'Home: Subtítulo/Bio Curta', type: 'text' as const },
+    { id: 'hero_badge', label: 'Home: Badge/Subtítulo (Topo)', type: 'text' as const },
+    { id: 'hero_sub', label: 'Home: Bio Curta (Subtítulo)', type: 'text' as const },
     { id: 'hero_image', label: 'Home: Imagem de Destaque (URL)', type: 'image' as const },
+    { id: 'hero_exp_years', label: 'Home: Experiência (Valor)', type: 'text' as const },
+    { id: 'hero_exp_text', label: 'Home: Experiência (Rótulo)', type: 'text' as const },
     { id: 'about_title', label: 'Sobre: Título de Introdução', type: 'text' as const },
     { id: 'about_bio', label: 'Sobre: Biografia Completa', type: 'text' as const },
     { id: 'about_image', label: 'Sobre: Foto de Perfil (URL)', type: 'image' as const },

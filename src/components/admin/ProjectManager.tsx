@@ -6,7 +6,10 @@ import ImageUploader from '../ImageUploader';
 export default function ProjectManager() {
   const { projects, addProject, editProject, removeProject, loading } = useProjects();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isDeleteConfirmOpen, setIsDeleteConfirmOpen] = useState(false);
+  const [projectToDelete, setProjectToDelete] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     title: '',
     description: '',
@@ -66,8 +69,21 @@ export default function ProjectManager() {
   };
 
   const handleDelete = (id: string) => {
-    if (confirm('Tem certeza que deseja excluir este projeto?')) {
-      removeProject(id);
+    setProjectToDelete(id);
+    setIsDeleteConfirmOpen(true);
+  };
+
+  const confirmDelete = async () => {
+    if (projectToDelete) {
+      try {
+        setError(null);
+        await removeProject(projectToDelete);
+        setIsDeleteConfirmOpen(false);
+        setProjectToDelete(null);
+      } catch (err: any) {
+        setError("Não foi possível excluir o projeto. Verifique suas permissões.");
+        console.error(err);
+      }
     }
   };
 
@@ -86,6 +102,13 @@ export default function ProjectManager() {
           <span>Novo Projeto</span>
         </button>
       </div>
+
+      {error && (
+        <div className="bg-error/10 border border-error/20 text-error p-4 rounded-md text-sm flex justify-between items-center">
+          <span>{error}</span>
+          <button onClick={() => setError(null)} className="hover:opacity-70"><X size={16} /></button>
+        </div>
+      )}
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {loading ? (
@@ -121,6 +144,38 @@ export default function ProjectManager() {
           ))
         )}
       </div>
+
+      {/* Delete Confirmation Modal */}
+      {isDeleteConfirmOpen && (
+        <div className="fixed inset-0 z-[110] flex items-center justify-center p-6">
+          <div className="absolute inset-0 bg-primary/40 backdrop-blur-sm" onClick={() => setIsDeleteConfirmOpen(false)} />
+          <div className="bg-white max-w-sm w-full rounded-lg shadow-2xl relative z-10 p-8 text-center space-y-6">
+            <div className="w-16 h-16 bg-error/10 text-error rounded-full flex items-center justify-center mx-auto">
+              <Trash2 size={32} />
+            </div>
+            <div className="space-y-2">
+              <h3 className="text-xl font-serif font-bold text-primary">Confirmar Exclusão</h3>
+              <p className="text-sm text-on-surface-variant font-medium opacity-70">
+                Esta ação é permanente. Tem certeza que deseja remover este projeto?
+              </p>
+            </div>
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
+              <button 
+                onClick={() => setIsDeleteConfirmOpen(false)}
+                className="flex-1 bg-surface-container text-primary py-3 rounded-sm font-bold tracking-widest uppercase hover:bg-surface-container-high transition-all"
+              >
+                Cancelar
+              </button>
+              <button 
+                onClick={confirmDelete}
+                className="flex-1 bg-[#ba1a1a] text-white py-3 rounded-sm font-bold tracking-widest uppercase hover:bg-[#a01515] transition-all shadow-md"
+              >
+                Excluir
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Modal */}
       {isModalOpen && (
