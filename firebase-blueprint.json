@@ -1,0 +1,59 @@
+{
+  "entities": {
+    "Project": {
+      "title": "Project",
+      "description": "Portfolio work showcase",
+      "type": "object",
+      "properties": {
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "imageUrl": { "type": "string" },
+        "tags": { "type": "array" },
+        "githubUrl": { "type": "string" },
+        "liveUrl": { "type": "string" },
+        "category": { "type": "string" },
+        "featured": { "type": "boolean" },
+        "order": { "type": "number" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["title", "description", "imageUrl"]
+    },
+    "Content": {
+      "title": "Global Content",
+      "description": "Editable text and image assets for the site",
+      "type": "object",
+      "properties": {
+        "value": { "type": "string" },
+        "type": { "type": "string", "enum": ["text", "image"] },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["value", "type"]
+    },
+    "ContactMessage": {
+      "title": "Contact Message",
+      "description": "Messages sent by recruiters",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "email": { "type": "string" },
+        "message": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["name", "email", "message"]
+    }
+  },
+  "firestore": {
+    "/projects/{projectId}": {
+      "schema": "Project",
+      "description": "Collection of portfolio projects"
+    },
+    "/content/{contentId}": {
+      "schema": "Content",
+      "description": "Website copy and image references"
+    },
+    "/messages/{messageId}": {
+      "schema": "ContactMessage",
+      "description": "Messages received via the contact form"
+    }
+  }
+}
