@@ -13,19 +13,23 @@ import About from './pages/About';
 import Contact from './pages/Contact';
 import Admin from './pages/Admin';
 
+import { ThemeProvider } from './contexts/ThemeContext';
+
 export default function App() {
   return (
     <AuthProvider>
-      <Router>
-        <Layout>
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/sobre" element={<About />} />
-            <Route path="/contato" element={<Contact />} />
-            <Route path="/admin/*" element={<Admin />} />
-          </Routes>
-        </Layout>
-      </Router>
+      <ThemeProvider>
+        <Router>
+          <Layout>
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/sobre" element={<About />} />
+              <Route path="/contato" element={<Contact />} />
+              <Route path="/admin/*" element={<Admin />} />
+            </Routes>
+          </Layout>
+        </Router>
+      </ThemeProvider>
     </AuthProvider>
   );
 }

@@ -1,13 +1,24 @@
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { LogIn, Menu, X, Globe } from 'lucide-react';
+import { LogIn, Menu, X, Globe, Moon, Sun } from 'lucide-react';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useContent } from '../../hooks/useFirebase';
+import { useTheme } from '../../contexts/ThemeContext';
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
   const { t, i18n } = useTranslation();
+  const { content } = useContent();
+  const { isDarkMode, toggleDarkMode } = useTheme();
+
+  const getTranslatableContent = (key: string, defaultValue: string) => {
+    const langSuffix = i18n.language.startsWith('pt') ? '' : i18n.language.includes('en') ? '_en' : i18n.language.includes('es') ? '_es' : '';
+    return content[`${key}${langSuffix}`]?.value || content[key]?.value || defaultValue;
+  };
+
+  const logoText = getTranslatableContent('site_logo', 'Paulo dos Santos Ribeiro');
 
   const navLinks = [
     { name: t('nav.portfolio'), path: '/' },
@@ -28,26 +39,38 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 glass border-b border-surface-variant">
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-        <Link to="/" className="text-xl md:text-2xl font-serif font-bold text-primary">
-          Paulo dos Santos Ribeiro
-        </Link>
+        {logoText && (
+          <Link to="/" className="text-xl md:text-2xl font-serif font-bold text-primary">
+            {logoText}
+          </Link>
+        )}
+        {!logoText && <div className="flex-1" />}
 
         {/* Desktop Nav */}
         <div className="hidden md:flex items-center space-x-8">
-          <div className="flex items-center space-x-2 border-r border-surface-variant pr-8 text-on-surface">
-            <Globe size={14} className="opacity-50" />
-            <div className="flex space-x-3">
-              {languages.map((lang) => (
-                <button
-                  key={lang.code}
-                  onClick={() => changeLanguage(lang.code)}
-                  className={`text-[10px] font-bold tracking-widest transition-colors hover:text-secondary ${
-                    i18n.language.includes(lang.code) ? 'text-secondary' : 'opacity-40'
-                  }`}
-                >
-                  {lang.name}
-                </button>
-              ))}
+          <div className="flex items-center space-x-6 border-r border-surface-variant pr-8">
+            <button
+              onClick={toggleDarkMode}
+              className="p-2 text-on-surface hover:text-secondary transition-colors"
+              aria-label="Toggle Theme"
+            >
+              {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+            <div className="flex items-center space-x-2 text-on-surface">
+              <Globe size={14} className="opacity-50" />
+              <div className="flex space-x-3">
+                {languages.map((lang) => (
+                  <button
+                    key={lang.code}
+                    onClick={() => changeLanguage(lang.code)}
+                    className={`text-[10px] font-bold tracking-widest transition-colors hover:text-secondary ${
+                      i18n.language.includes(lang.code) ? 'text-secondary' : 'opacity-40'
+                    }`}
+                  >
+                    {lang.name}
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
           {navLinks.map((link) => (
@@ -71,9 +94,18 @@ export default function Navbar() {
         </div>
 
         {/* Mobile Toggle */}
-        <button className="md:hidden text-primary" onClick={() => setIsOpen(!isOpen)}>
-          {isOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
+        <div className="flex items-center space-x-4 md:hidden">
+          <button
+            onClick={toggleDarkMode}
+            className="p-2 text-primary"
+            aria-label="Toggle Theme"
+          >
+            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
+          <button className="text-primary" onClick={() => setIsOpen(!isOpen)}>
+            {isOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
 
       {/* Mobile Menu */}

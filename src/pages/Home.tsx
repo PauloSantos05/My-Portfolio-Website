@@ -66,7 +66,7 @@ export default function Home() {
             <a href="#projects" className="bg-primary text-white px-8 py-4 rounded-sm font-bold tracking-widest uppercase hover:bg-primary/95 transition-all card-hover">
               {t('nav.portfolio')}
             </a>
-            <Link to="/sobre" className="bg-white border border-surface-variant text-primary px-8 py-4 rounded-sm font-bold tracking-widest uppercase hover:bg-surface transition-all">
+            <Link to="/sobre" className="bg-surface border border-surface-variant text-primary px-8 py-4 rounded-sm font-bold tracking-widest uppercase hover:bg-surface-variant/20 transition-all">
               {t('nav.about')}
             </Link>
           </motion.div>
@@ -88,7 +88,7 @@ export default function Home() {
               <User size={80} className="text-secondary opacity-20" />
             </div>
           )}
-          <div className="absolute bottom-6 left-6 z-20 bg-white/90 backdrop-blur px-6 py-4 border border-surface-variant shadow-sm">
+          <div className="absolute bottom-6 left-6 z-20 bg-surface/90 backdrop-blur px-6 py-4 border border-surface-variant shadow-sm">
             <p className="text-3xl font-serif font-bold text-primary">{heroExpYears}</p>
             <p className="text-[10px] font-bold uppercase tracking-widest text-secondary">{heroExpText}</p>
           </div>
@@ -118,7 +118,7 @@ export default function Home() {
               <motion.div 
                 key={project.id}
                 whileHover={{ y: -8 }}
-                className="group bg-white border border-surface-variant rounded-sm overflow-hidden"
+                className="group bg-surface border border-surface-variant rounded-sm overflow-hidden"
               >
                 <div className="aspect-[4/3] overflow-hidden relative">
                   <img 
@@ -230,7 +230,7 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="w-full md:w-[400px] bg-white p-8 md:p-12 shadow-2xl z-10">
+          <div className="w-full md:w-[400px] bg-surface p-8 md:p-12 shadow-2xl z-10 border border-surface-variant">
             <Link to="/contato" className="w-full bg-secondary text-white py-4 px-6 text-center font-bold tracking-widest uppercase flex items-center justify-center space-x-2 hover:bg-secondary/90 transition-all">
               <span>{t('home.cta.button')}</span>
               <ArrowRight size={20} />

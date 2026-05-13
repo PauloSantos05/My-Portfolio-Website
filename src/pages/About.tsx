@@ -67,8 +67,8 @@ export default function About() {
               viewport={{ once: true }}
               className={`flex flex-col md:flex-row items-start md:items-center gap-8 relative ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}
             >
-              <div className="absolute left-0 md:left-1/2 w-4 h-4 bg-secondary rounded-full -translate-x-1/2 z-10 border-4 border-white shadow-sm" />
-              <div className={`md:flex-1 space-y-2 p-8 bg-white border border-surface-variant rounded-sm shadow-sm hover:border-secondary transition-all ${i % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
+              <div className="absolute left-0 md:left-1/2 w-4 h-4 bg-secondary rounded-full -translate-x-1/2 z-10 border-4 border-surface shadow-sm" />
+              <div className={`md:flex-1 space-y-2 p-8 bg-surface border border-surface-variant rounded-sm shadow-sm hover:border-secondary transition-all ${i % 2 === 0 ? 'md:text-right' : 'md:text-left'}`}>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-secondary">{exp.period}</p>
                 <h3 className="text-xl font-serif font-bold text-primary">{t(`about.experience.${i}.role`, { defaultValue: exp.role })}</h3>
                 <p className="text-sm font-bold text-on-surface-variant">{exp.company}</p>
@@ -97,7 +97,7 @@ export default function About() {
               { id: 'dev', title: 'Development', skills: ['React', 'Tailwind CSS', 'Node.js'] },
               { id: 'strat', title: 'Strategy', skills: ['User Research', 'Content Strategy', 'Product Roadmap'] },
             ].map((skill) => (
-              <div key={skill.id} className="space-y-4 p-8 border border-surface-variant bg-white rounded-sm">
+              <div key={skill.id} className="space-y-4 p-8 border border-surface-variant bg-surface rounded-sm">
                 <h3 className="text-lg font-serif font-bold text-primary">{t(`about.skills.${skill.id}.title`, { defaultValue: skill.title })}</h3>
                 <ul className="space-y-2">
                   {skill.skills.map((s, index) => (

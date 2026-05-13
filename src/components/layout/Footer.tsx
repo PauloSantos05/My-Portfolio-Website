@@ -1,18 +1,29 @@
 import { Link } from 'react-router-dom';
 import { Github, Linkedin, Mail, MapPin } from 'lucide-react';
 import { useTranslation } from 'react-i18next';
+import { useContent } from '../../hooks/useFirebase';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const { content } = useContent();
+
+  const getTranslatableContent = (key: string, defaultValue: string) => {
+    const langSuffix = i18n.language.startsWith('pt') ? '' : i18n.language.includes('en') ? '_en' : i18n.language.includes('es') ? '_es' : '';
+    return content[`${key}${langSuffix}`]?.value || content[key]?.value || defaultValue;
+  };
+
+  const logoText = getTranslatableContent('site_logo', 'Paulo dos Santos Ribeiro');
 
   return (
     <footer className="bg-primary text-on-primary py-16 px-6">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center space-y-8 md:space-y-0 text-center md:text-left">
         <div className="space-y-4">
-          <Link to="/" className="text-2xl font-serif font-bold italic">
-            Rooted Portfolio
-          </Link>
+          {logoText && (
+            <Link to="/" className="text-2xl font-serif font-bold italic">
+              {logoText}
+            </Link>
+          )}
           <div className="flex flex-col space-y-2 text-sm opacity-80">
             <div className="flex items-center justify-center md:justify-start space-x-2">
               <Mail size={16} />

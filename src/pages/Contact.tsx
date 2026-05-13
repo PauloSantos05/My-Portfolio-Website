@@ -88,7 +88,7 @@ export default function Contact() {
         </div>
 
         {/* Right Side: Form */}
-        <div className="bg-white p-8 md:p-16 border border-surface-variant shadow-2xl relative overflow-hidden">
+        <div className="bg-surface p-8 md:p-16 border border-surface-variant shadow-2xl relative overflow-hidden">
           <div className="absolute top-0 right-0 w-32 h-32 bg-secondary/5 -translate-y-1/2 translate-x-1/2 rounded-full blur-2xl" />
           
           <form onSubmit={handleSubmit} className="space-y-8 relative z-10">

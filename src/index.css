@@ -6,30 +6,58 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Playfair Display", ui-serif, Georgia, serif;
   
-  /* Brand Palette */
-  --color-primary: #154212;
-  --color-primary-container: #2d5a27;
-  --color-on-primary: #ffffff;
-  
-  --color-secondary: #c5a059;
-  --color-secondary-container: #fed488;
-  
-  --color-surface: #f9faf2;
-  --color-on-surface: #191c18;
-  --color-surface-variant: #e2e3dc;
-  --color-surface-container: #eeeeee;
-  --color-surface-container-high: #e0e0e0;
+  /* Brand Palette Mapping */
+  --color-primary: var(--primary);
+  --color-on-primary: var(--on-primary);
+  --color-secondary: var(--secondary);
+  --color-surface: var(--surface);
+  --color-on-surface: var(--on-surface);
+  --color-surface-variant: var(--surface-variant);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-error: var(--error);
+  --color-on-error: var(--on-error);
 
-  --color-error: #ba1a1a;
-  --color-on-error: #ffffff;
+  --color-admin-sidebar: var(--admin-sidebar);
+  --color-admin-icon-bg: var(--admin-icon-bg);
   
   /* Custom Spacing */
   --spacing-section: 120px;
 }
 
+:root {
+  --primary: var(--theme-primary, #154212);
+  --on-primary: var(--theme-on-primary, #ffffff);
+  --secondary: var(--theme-secondary, #c5a059);
+  --surface: var(--theme-surface, #f9faf2);
+  --on-surface: var(--theme-on-surface, #191c18);
+  --surface-variant: var(--theme-surface-variant, #e2e3dc);
+  --surface-container: var(--theme-surface-container, #eeeeee);
+  --surface-container-high: var(--theme-surface-container-high, #e0e0e0);
+  --error: var(--theme-error, #ba1a1a);
+  --on-error: var(--theme-on-error, #ffffff);
+  --admin-sidebar: var(--theme-admin-sidebar, #ffffff);
+  --admin-icon-bg: var(--theme-admin-icon-bg, #eeeeee);
+}
+
+.dark {
+  --primary: var(--theme-dark-primary, #154212);
+  --on-primary: var(--theme-dark-on-primary, #fff);
+  --secondary: var(--theme-dark-secondary, #ffbe0c);
+  --surface: var(--theme-dark-surface, #11140e);
+  --on-surface: var(--theme-dark-on-surface, #e2e3dc);
+  --surface-variant: var(--theme-dark-surface-variant, #42493f);
+  --surface-container: var(--theme-dark-surface-container, #1a1c18);
+  --surface-container-high: var(--theme-dark-surface-container-high, #252722);
+  --error: var(--theme-dark-error, #ffb4ab);
+  --on-error: var(--theme-dark-on-error, #690005);
+  --admin-sidebar: var(--theme-dark-admin-sidebar, #1a1c18);
+  --admin-icon-bg: var(--theme-dark-admin-icon-bg, #111111);
+}
+
 @layer base {
   body {
-    @apply bg-surface text-on-surface font-sans antialiased selection:bg-secondary/30;
+    @apply bg-surface text-on-surface font-sans antialiased selection:bg-secondary/30 transition-colors duration-300;
   }
   
   h1, h2, h3, h4, h5, h6 {
@@ -38,12 +66,12 @@
 }
 
 .markdown-body {
-  @apply prose prose-slate max-w-none prose-headings:font-serif prose-a:text-primary prose-a:no-underline hover:prose-a:underline;
+  @apply prose prose-slate max-w-none prose-headings:font-serif prose-a:text-primary prose-a:no-underline hover:prose-a:underline dark:prose-invert;
 }
 
 /* Custom Utilities */
 .glass {
-  @apply bg-white/70 backdrop-blur-md border border-white/20;
+  @apply bg-surface/70 backdrop-blur-md border border-surface-variant/50;
 }
 
 .card-hover {

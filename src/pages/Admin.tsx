@@ -18,38 +18,38 @@ const Dashboard = () => {
         <p className="text-on-surface-variant font-medium opacity-70">{t('admin.welcome_msg', { defaultValue: 'O sistema está operacional e pronto para novos conteúdos.' })}</p>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <Link to="/admin/projetos" className="bg-white p-8 rounded-lg border border-surface-variant shadow-sm hover:border-secondary transition-all group">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Link to="/admin/projetos" className="bg-surface p-6 rounded-lg border border-surface-variant shadow-sm hover:border-secondary transition-all group">
           <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-surface-container rounded-md group-hover:bg-primary group-hover:text-white transition-all text-primary">
-              <FileCode size={24} />
+            <div className="p-3 bg-admin-icon-bg rounded-md group-hover:bg-primary group-hover:text-white transition-all text-primary">
+              <FileCode size={20} />
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-secondary group-hover:translate-x-1 transition-transform">{t('admin.manage', { defaultValue: 'Gerenciar' })}</span>
+            <span className="text-[9px] font-bold uppercase tracking-widest text-secondary group-hover:translate-x-1 transition-transform">Gerenciar</span>
           </div>
-          <h3 className="text-lg font-serif font-bold text-primary">{t('admin.projects')}</h3>
-          <p className="text-xs text-on-surface-variant opacity-50 mt-2 font-medium">{t('admin.projects_desc', { defaultValue: 'Controle seu portfólio público.' })}</p>
+          <h3 className="text-base font-serif font-bold text-primary">{t('admin.projects')}</h3>
+          <p className="text-xs text-on-surface-variant opacity-50 mt-1 font-medium">Controle seu portfólio.</p>
         </Link>
   
-        <Link to="/admin/mensagens" className="bg-white p-8 rounded-lg border border-surface-variant shadow-sm hover:border-secondary transition-all group">
+        <Link to="/admin/mensagens" className="bg-surface p-6 rounded-lg border border-surface-variant shadow-sm hover:border-secondary transition-all group">
           <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-surface-container rounded-md group-hover:bg-primary group-hover:text-white transition-all text-primary">
-              <MessageSquare size={24} />
+            <div className="p-3 bg-admin-icon-bg rounded-md group-hover:bg-primary group-hover:text-white transition-all text-primary">
+              <MessageSquare size={20} />
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-secondary group-hover:translate-x-1 transition-transform">{t('admin.view', { defaultValue: 'Visualizar' })}</span>
+            <span className="text-[9px] font-bold uppercase tracking-widest text-secondary group-hover:translate-x-1 transition-transform">Visualizar</span>
           </div>
-          <h3 className="text-lg font-serif font-bold text-primary">{t('admin.messages')}</h3>
-          <p className="text-xs text-on-surface-variant opacity-50 mt-2 font-medium">{t('admin.messages_desc', { defaultValue: 'Recrutadores em contato.' })}</p>
+          <h3 className="text-base font-serif font-bold text-primary">{t('admin.messages')}</h3>
+          <p className="text-xs text-on-surface-variant opacity-50 mt-1 font-medium">Caixa de entrada.</p>
         </Link>
   
-        <Link to="/admin/config" className="bg-white p-8 rounded-lg border border-surface-variant shadow-sm hover:border-secondary transition-all group">
+        <Link to="/admin/config" className="bg-surface p-6 rounded-lg border border-surface-variant shadow-sm hover:border-secondary transition-all group">
           <div className="flex justify-between items-start mb-4">
-            <div className="p-3 bg-surface-container rounded-md group-hover:bg-primary group-hover:text-white transition-all text-primary">
-              <Settings size={24} />
+            <div className="p-3 bg-admin-icon-bg rounded-md group-hover:bg-primary group-hover:text-white transition-all text-primary">
+              <Settings size={20} />
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-secondary group-hover:translate-x-1 transition-transform">{t('admin.adjust', { defaultValue: 'Ajustar' })}</span>
+            <span className="text-[9px] font-bold uppercase tracking-widest text-secondary group-hover:translate-x-1 transition-transform">Ajustar</span>
           </div>
-          <h3 className="text-lg font-serif font-bold text-primary">{t('admin.settings')}</h3>
-          <p className="text-xs text-on-surface-variant opacity-50 mt-2 font-medium">{t('admin.settings_desc', { defaultValue: 'Altere textos e mídias.' })}</p>
+          <h3 className="text-base font-serif font-bold text-primary">{t('admin.settings')}</h3>
+          <p className="text-xs text-on-surface-variant opacity-50 mt-1 font-medium">Textos e mídias.</p>
         </Link>
       </div>
     </div>
@@ -118,7 +118,7 @@ export default function Admin() {
   return (
     <div className="min-h-screen flex bg-surface-container-low">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-surface-variant hidden md:flex flex-col p-6 sticky top-0 h-screen">
+      <aside className="w-64 bg-admin-sidebar border-r border-surface-variant hidden md:flex flex-col p-6 sticky top-0 h-screen">
         <div className="mb-12">
           <h2 className="text-xl font-serif font-bold text-primary leading-tight">Admin Console</h2>
           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-secondary">Managing Content</p>
